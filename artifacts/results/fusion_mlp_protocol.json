@@ -1,0 +1,63 @@
+{
+  "experiment": "Aedes albopictus shallow nonlinear representation comparison",
+  "cohort_sites": 1601,
+  "cohort_presence": 739,
+  "outer_contexts": [
+    "s42_f0",
+    "s42_f1",
+    "s42_f2",
+    "s202_f0",
+    "s202_f1",
+    "s202_f2"
+  ],
+  "inner_group_cell_degrees": 5,
+  "inner_fusion_folds": 4,
+  "random_seed_scheme": "Base seed 2026 plus 100 per outer context, with fixed offsets per model.",
+  "model_config": {
+    "activation": "relu",
+    "alpha": 0.01,
+    "batch_size": 128,
+    "early_stopping": true,
+    "learning_rate_init": 0.001,
+    "max_iter": 300,
+    "n_iter_no_change": 20,
+    "solver": "adam",
+    "validation_fraction": 0.15
+  },
+  "batch_size_policy": "min(configured batch size, current training partition size)",
+  "architectures": {
+    "Environment41": [
+      32,
+      16
+    ],
+    "AlphaEarth64": [
+      32,
+      16
+    ],
+    "Environment_AlphaEarth105": [
+      64,
+      32
+    ],
+    "Nonlinear_late_fusion": {
+      "modality_experts": [
+        32,
+        16
+      ],
+      "meta_learner": [
+        4
+      ]
+    }
+  },
+  "sklearn_version": "1.9.1",
+  "inputs": {
+    "data\\derived\\global_mapping_2024\\models\\contexts.json": "08df6bc04f0ad0f5b3d199a7b99a7e9acaa01568f246eeffb9289907d6c4b382",
+    "data\\derived\\global_mapping_2024\\models\\protocol.json": "9aa554ee87463709ace185ef330fab3021b99b67e55452b860f90554bfb3816f",
+    "Claude\\artifacts\\dataset\\site_features.csv": "c591b45d42b6317d941be2bc51a99acdc6376f9c50389f28464af04bc43ef1b7",
+    "Claude\\artifacts\\results\\representation_comparison.csv": "211bedff3da79abca013a710a2515452b4d85b2cfc1f01b1c98d78613f9c69f1"
+  },
+  "outputs": {
+    "results\\fusion_mlp_fold_metrics.csv": "f27063ed560ebd4f0448b8d409d7b3c622a2de1e634b3d6523508d81274f4f4b",
+    "results\\fusion_mlp_summary.csv": "a35d3f40cbfbd60f0cd13ab8c508313b9066417dcc85e3fdfef152ca5bd286e3",
+    "results\\fusion_mlp_summary.json": "bfd72fc87c4ff1c1191ae71b8da60d31a95215764ddc2d7c9c8e4b6a8684ce3d"
+  }
+}

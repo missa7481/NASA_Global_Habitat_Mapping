@@ -1,0 +1,9 @@
+numpy>=2.0
+pandas>=2.2
+scipy>=1.13
+scikit-learn>=1.5
+torch>=2.4
+pillow>=10
+earthengine-api>=1.0  # data extraction and VLM chips only
+rasterio>=1.4         # data extraction only
+open_clip_torch        # VLM concept probes only

@@ -1,0 +1,41 @@
+design,split,model,TV,dominant_flip
+block10,fold0,RF (separate scales),0.05385461740111084,0.03076923076923077
+block10,fold0,HiCo (max |log-mean-exp - A|),1.1281420224662497e-06,0.0
+block10,fold1,RF (separate scales),0.05748328502400344,0.02631578947368421
+block10,fold1,HiCo (max |log-mean-exp - A|),8.984158998970315e-07,0.0
+block10,fold2,RF (separate scales),0.060441012079471966,0.10933940774487472
+block10,fold2,HiCo (max |log-mean-exp - A|),1.0772298342232034e-06,0.0
+block10,fold3,RF (separate scales),0.07531684081647254,0.15111940298507462
+block10,fold3,HiCo (max |log-mean-exp - A|),1.4944623476509378e-06,0.0
+block10,fold4,RF (separate scales),0.04891019238842186,0.04375
+block10,fold4,HiCo (max |log-mean-exp - A|),1.2074226471980865e-06,0.0
+loro,N America,RF (separate scales),0.04519726450433717,0.08821104699093157
+loro,N America,HiCo (max |log-mean-exp - A|),1.0176251894478128e-06,0.0
+loro,Latin America,RF (separate scales),0.05229524240895759,0.12121212121212122
+loro,Latin America,HiCo (max |log-mean-exp - A|),9.994501057875027e-07,0.0
+loro,Europe,RF (separate scales),0.06807078072047489,0.0
+loro,Europe,HiCo (max |log-mean-exp - A|),1.0253179283381542e-06,0.0
+loro,Africa,RF (separate scales),0.06433739302964155,0.06521739130434782
+loro,Africa,HiCo (max |log-mean-exp - A|),7.203926548626782e-07,0.0
+loro,Asia,RF (separate scales),0.053998083822255454,0.02564102564102564
+loro,Asia,HiCo (max |log-mean-exp - A|),1.0176251894478128e-06,0.0
+loro,Oceania,RF (separate scales),0.0791000075204428,0.05761316872427984
+loro,Oceania,HiCo (max |log-mean-exp - A|),1.0772298342232034e-06,0.0
+env,envC0,RF (separate scales),0.08931572466633078,0.11458333333333333
+env,envC0,HiCo (max |log-mean-exp - A|),9.580205446724221e-07,0.0
+env,envC1,RF (separate scales),0.04316078415443955,0.019580419580419582
+env,envC1,HiCo (max |log-mean-exp - A|),1.0176251894478128e-06,0.0
+env,envC2,RF (separate scales),0.038741523328655054,0.017429193899782137
+env,envC2,HiCo (max |log-mean-exp - A|),1.0176251894478128e-06,0.0
+env,envC3,RF (separate scales),0.04702477991162563,0.04419889502762431
+env,envC3,HiCo (max |log-mean-exp - A|),1.0176251894478128e-06,0.0
+env,envC4,RF (separate scales),0.03894409608512905,0.012867647058823529
+env,envC4,HiCo (max |log-mean-exp - A|),1.1281420224662497e-06,0.0
+zone,Tropical,RF (separate scales),0.052928960661758666,0.029239766081871343
+zone,Tropical,HiCo (max |log-mean-exp - A|),8.984158998970315e-07,0.0
+zone,Arid,RF (separate scales),0.04859578744663677,0.06382978723404255
+zone,Arid,HiCo (max |log-mean-exp - A|),1.1964391237739846e-06,0.0
+zone,Temperate,RF (separate scales),0.060753024415756786,0.054390934844192634
+zone,Temperate,HiCo (max |log-mean-exp - A|),1.136834478998594e-06,0.0
+zone,Cold,RF (separate scales),0.05165428973405106,0.0
+zone,Cold,HiCo (max |log-mean-exp - A|),9.729217058662698e-07,0.0

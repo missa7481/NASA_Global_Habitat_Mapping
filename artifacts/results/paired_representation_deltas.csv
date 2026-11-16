@@ -1,0 +1,5 @@
+endpoint,learner,comparison,mean_delta_AP,fold_delta_SD,n_spatial_folds,interpretation
+presence_background,GLM,Environment_AlphaEarth105 minus Environment41,0.113233,0.042599,6,Descriptive paired fold spread; not an independent-sample confidence interval
+presence_background,GLM,Environment_AlphaEarth105 minus AlphaEarth64,-0.000812,0.018043,6,Descriptive paired fold spread; not an independent-sample confidence interval
+presence_background,RF,Environment_AlphaEarth105 minus Environment41,0.017834,0.018249,6,Descriptive paired fold spread; not an independent-sample confidence interval
+presence_background,RF,Environment_AlphaEarth105 minus AlphaEarth64,0.009124,0.020359,6,Descriptive paired fold spread; not an independent-sample confidence interval

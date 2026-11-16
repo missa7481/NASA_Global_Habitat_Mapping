@@ -1,0 +1,17 @@
+model,coarse_reference,class,median_abs_log_ratio,share_parents_child_mean_exceeds_coarse_by_10pct,share_parents_off_by_more_than_2x,spearman_coarse_vs_aggregated
+MLPEarly,separately fitted 0.5-deg model,Ae_albopictus,2.1777811867445767,0.7244982084535625,0.8181976725750706,0.7706937387382353
+MLPEarly,separately fitted 0.5-deg model,Ae_aegypti,4.418215197960677,0.797364999841456,0.8804261660906237,0.5828855684296884
+MLPEarly,separately fitted 0.5-deg model,Culex,1.3419707185557785,0.7612962551923138,0.729317944002283,0.5777919284697399
+MLPEarly,separately fitted 0.5-deg model,Anopheles,1.1119974665758052,0.7178710720740717,0.6635856295779561,0.6191797632941989
+GatedMoE,separately fitted 0.5-deg model,Ae_albopictus,2.599040600669908,0.646922662269715,0.8246187018422805,0.7623697385930133
+GatedMoE,separately fitted 0.5-deg model,Ae_aegypti,4.690879413630679,0.760836477787995,0.8900022196150553,0.46445590049565877
+GatedMoE,separately fitted 0.5-deg model,Culex,1.3531426847830632,0.7600120493388718,0.7702381329866506,0.48977449565999476
+GatedMoE,separately fitted 0.5-deg model,Anopheles,1.2007485303705079,0.7155246218727209,0.7037448076862098,0.4380845746506649
+HiCo,own macro term A (intensity-space ensemble),Ae_albopictus,1.332252173025239e-07,0.0,0.0,0.9999999999973219
+HiCo,own macro term A (intensity-space ensemble),Ae_aegypti,1.3476384663757557e-07,0.0,0.0,0.9999999999969392
+HiCo,own macro term A (intensity-space ensemble),Culex,1.0237677289248737e-07,0.0,0.0,0.9999999999965566
+HiCo,own macro term A (intensity-space ensemble),Anopheles,1.0370494069045222e-07,0.0,0.0,0.9999999999958036
+HiCoMoE,own macro term A (intensity-space ensemble),Ae_albopictus,1.2295746065760227e-07,0.0,0.0,0.9999999999981826
+HiCoMoE,own macro term A (intensity-space ensemble),Ae_aegypti,1.225950649885732e-07,0.0,0.0,0.9999999999981586
+HiCoMoE,own macro term A (intensity-space ensemble),Culex,1.0415984302847292e-07,0.0,0.0,0.9999999999964969
+HiCoMoE,own macro term A (intensity-space ensemble),Anopheles,1.0620393964266839e-07,0.0,0.0,0.9999999999965449

@@ -1,0 +1,9 @@
+effort_covariate,predictors,spatial_cv_R2
+worldpop_2024_density,AlphaEarth64,0.8212349419806698
+worldpop_2024_density,EnvEco37,0.6122324218879014
+built_fraction,AlphaEarth64,0.8762322639385772
+built_fraction,EnvEco37,0.7712846341763477
+night_lights,AlphaEarth64,0.8158933731184107
+night_lights,EnvEco37,0.7238474627495686
+accessibility_2015_minutes,AlphaEarth64,0.4874444298287173
+accessibility_2015_minutes,EnvEco37,0.4220948517994899

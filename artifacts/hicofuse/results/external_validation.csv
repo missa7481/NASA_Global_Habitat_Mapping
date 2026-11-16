@@ -1,0 +1,41 @@
+dataset,subset,model,n_pos,AUC
+Kraemer Ae. albopictus,all,MLPEarly (composition only),6056,0.4488703500660502
+Kraemer Ae. albopictus,>~110 km from iNat reports,MLPEarly (composition only),2375,0.3391986357894737
+Kraemer Ae. albopictus,all,GatedMoE (composition only),6056,0.36581903731836196
+Kraemer Ae. albopictus,>~110 km from iNat reports,GatedMoE (composition only),2375,0.21465608842105266
+Kraemer Ae. albopictus,all,HiCo (composition only),6056,0.5692658124174372
+Kraemer Ae. albopictus,>~110 km from iNat reports,HiCo (composition only),2375,0.47920833263157897
+Kraemer Ae. albopictus,all,HiCoMoE (composition only),6056,0.5511301238441215
+Kraemer Ae. albopictus,>~110 km from iNat reports,HiCoMoE (composition only),2375,0.4422174568421052
+Kraemer Ae. albopictus,all,MLPEarly x support (two-part),6056,0.8560405614266844
+Kraemer Ae. albopictus,>~110 km from iNat reports,MLPEarly x support (two-part),2375,0.7458774778947369
+Kraemer Ae. albopictus,all,GatedMoE x support (two-part),6056,0.7988457265521796
+Kraemer Ae. albopictus,>~110 km from iNat reports,GatedMoE x support (two-part),2375,0.648695317894737
+Kraemer Ae. albopictus,all,HiCo x support (two-part),6056,0.868641751981506
+Kraemer Ae. albopictus,>~110 km from iNat reports,HiCo x support (two-part),2375,0.7787348042105262
+Kraemer Ae. albopictus,all,HiCoMoE x support (two-part),6056,0.8621906472919418
+Kraemer Ae. albopictus,>~110 km from iNat reports,HiCoMoE x support (two-part),2375,0.7650806694736842
+Kraemer Ae. aegypti,all,MLPEarly (composition only),7253,0.5029281276713085
+Kraemer Ae. aegypti,>~110 km from iNat reports,MLPEarly (composition only),3613,0.4837075394409079
+Kraemer Ae. aegypti,all,GatedMoE (composition only),7253,0.3779750268854267
+Kraemer Ae. aegypti,>~110 km from iNat reports,GatedMoE (composition only),3613,0.3619052643232771
+Kraemer Ae. aegypti,all,HiCo (composition only),7253,0.5712570674203776
+Kraemer Ae. aegypti,>~110 km from iNat reports,HiCo (composition only),3613,0.5570163077774702
+Kraemer Ae. aegypti,all,HiCoMoE (composition only),7253,0.559319254101751
+Kraemer Ae. aegypti,>~110 km from iNat reports,HiCoMoE (composition only),3613,0.5470178162192084
+Kraemer Ae. aegypti,all,MLPEarly x support (two-part),7253,0.8588390900317111
+Kraemer Ae. aegypti,>~110 km from iNat reports,MLPEarly x support (two-part),3613,0.824136684195959
+Kraemer Ae. aegypti,all,GatedMoE x support (two-part),7253,0.7694236288432372
+Kraemer Ae. aegypti,>~110 km from iNat reports,GatedMoE x support (two-part),3613,0.7281441267644617
+Kraemer Ae. aegypti,all,HiCo x support (two-part),7253,0.8490236729629118
+Kraemer Ae. aegypti,>~110 km from iNat reports,HiCo x support (two-part),3613,0.820519000830335
+Kraemer Ae. aegypti,all,HiCoMoE x support (two-part),7253,0.8522817978767406
+Kraemer Ae. aegypti,>~110 km from iNat reports,HiCoMoE x support (two-part),3613,0.8230843398837532
+NEON 2026 Ae. albopictus,373 sites,MLPEarly (composition only),24,0.8006208213944603
+NEON 2026 Ae. albopictus,373 sites,GatedMoE (composition only),24,0.6583094555873925
+NEON 2026 Ae. albopictus,373 sites,HiCo (composition only),24,0.7431948424068767
+NEON 2026 Ae. albopictus,373 sites,HiCoMoE (composition only),24,0.7889207258834766
+NEON 2026 Ae. albopictus,373 sites,MLPEarly x support (two-part),24,0.9306351480420249
+NEON 2026 Ae. albopictus,373 sites,GatedMoE x support (two-part),24,0.9274116523400191
+NEON 2026 Ae. albopictus,373 sites,HiCo x support (two-part),24,0.9212034383954155
+NEON 2026 Ae. albopictus,373 sites,HiCoMoE x support (two-part),24,0.912010506208214

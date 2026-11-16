@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.npz
+*.npy
+*.pkl
+*.tif
+*.log
+artifacts/hicofuse/dataset*
+artifacts/hicofuse/store/
+artifacts/hicofuse/global/
+artifacts/dataset/
+**/neon_oof.csv
+**/oof_*
