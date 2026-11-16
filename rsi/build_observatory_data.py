@@ -2,13 +2,12 @@
 """Aggregate model-development results into ../github_site/data/model_benchmarks.json for the website (Research, Models and Methods pages).
 
 Aggregate metrics only (split means, fold summaries). No coordinates, per-site or per-cell values.
-Also copies the 0.2-degree dark global model maps into ../github_site/assets/maps/.
+Map images are rendered separately by render_framework_maps.py into ../github_site/assets/hico/.
 """
 
 from __future__ import annotations
 
 import json
-import shutil
 from pathlib import Path
 
 import numpy as np
@@ -149,6 +148,13 @@ def main():
     D["foundation"] = [{"representation": row.factor, "learner": row.learner, "AP": r(row.AP_mean), "AP_sd": r(row.AP_fold_SD), "AUC": r(row.AUC_mean)}
                        for row in t.itertuples()]
 
+    # ---- HiCo-Fuse framework report (aggregate tables only; region boxes and per-cell values are not exported)
+    rep = json.loads((A / "hicofuse/report/report_data.json").read_text(encoding="utf-8"))
+    zm = json.loads((A / "hicofuse/report/zoom_meta.json").read_text(encoding="utf-8"))
+    rep["zoom_parents"] = {k: v["parents"] for k, v in zm.items()}
+    rep["gate_dominant_share"] = {nm: [r(x) for x in np.load(A / f"hicofuse/results/gate_share_{nm}.npy")] for nm in ("albopictus", "aegypti")}
+    D["hico"] = rep
+
     # ---- research ledger summary
     led = [json.loads(x) for x in (ROOT / "rsi/memory/ledger.jsonl").read_text(encoding="utf-8").splitlines() if x.strip()]
     D["ledger"] = [{"id": e["id"], "level": e["level"].replace(" RSI", ""), "title": e["title"], "status": e["status"],
@@ -156,11 +162,15 @@ def main():
     D["ledger_counts"] = pd.Series([e["status"] for e in led]).value_counts().to_dict()
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(json.dumps(D, indent=1, ensure_ascii=False), encoding="utf-8")
-    maps = SITE / "assets/maps"
-    maps.mkdir(parents=True, exist_ok=True)
-    for f in (ROOT / "artifacts/rsi/site_preview/assets").glob("map_*.webp"):
-        shutil.copy2(f, maps / f.name)
+    def clean(o):   # browsers reject NaN/Infinity in JSON
+        if isinstance(o, dict):
+            return {k: clean(v) for k, v in o.items()}
+        if isinstance(o, list):
+            return [clean(v) for v in o]
+        if isinstance(o, float) and not np.isfinite(o):
+            return None
+        return o
+    OUT.write_text(json.dumps(clean(D), indent=1, ensure_ascii=False, allow_nan=False), encoding="utf-8")
     print("wrote", OUT, OUT.stat().st_size, "bytes")
 
 
