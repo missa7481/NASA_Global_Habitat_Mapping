@@ -16,7 +16,7 @@ from pathlib import Path
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
-SITE = ROOT / "site"
+SITE = ROOT / "artifacts/rsi/site_preview"            # local preview only; not published
 ASSETS = SITE / "assets"
 SPECIES = [("albopictus", "Ae. albopictus", "Asian tiger mosquito"), ("aegypti", "Ae. aegypti", "Yellow fever mosquito"),
            ("culex", "Culex", "West Nile vectors"), ("anopheles", "Anopheles", "Malaria vectors")]

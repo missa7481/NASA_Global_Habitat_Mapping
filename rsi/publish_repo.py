@@ -3,7 +3,6 @@
 
 Only whitelisted, aggregate files are copied. Never copied: observation-level data, site coordinates,
 per-cell or per-site predictions (OOF arrays, neon_oof.csv, gate weights), raw downloads, global rasters.
-Run rsi/build_site.py first (it writes site/index.html and site/assets/).
 """
 
 from __future__ import annotations
@@ -187,7 +186,7 @@ def benchmark() -> str:
              "- The random forest is the model to beat on every holdout design.\n"
              "- Most transfer error is the regional species mix (class prior), not the habitat relation.\n"
              "- HiCo's coherence rule can be applied to any model after training at no measurable accuracy cost.\n\n"
-             "Full reasoning, hypotheses and failures: `rsi/memory/RESEARCH_MEMORY.md` and the [project site](https://missa7481.github.io/NASA_Global_Habitat_Mapping/).\n")
+             "Full reasoning, hypotheses and failures: `rsi/memory/RESEARCH_MEMORY.md`.\n")
     return "\n".join(S)
 
 

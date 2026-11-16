@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from hicofuse.render import ROW_S60, H, W, block_mean, canvas, ramp  # noqa: E402
 
-OUT = ROOT / "site/assets"
+OUT = ROOT / "artifacts/rsi/site_preview/assets"
 OUT.mkdir(parents=True, exist_ok=True)
 # monotone in lightness: deep navy -> cyan -> pale gold (reads on a near-black page)
 NIGHT = ["#0f2238", "#123a63", "#15568c", "#1874b0", "#2b95c8", "#4fb6d6", "#86d3dc", "#c4ead9", "#fff4c2"]

@@ -178,4 +178,4 @@ All on the composition task with the holdout designs of section 4; mean per-clas
 - Most transfer error is the regional species mix (class prior), not the habitat relation.
 - HiCo's coherence rule can be applied to any model after training at no measurable accuracy cost.
 
-Full reasoning, hypotheses and failures: `rsi/memory/RESEARCH_MEMORY.md` and the [project site](https://missa7481.github.io/NASA_Global_Habitat_Mapping/).
+Full reasoning, hypotheses and failures: `rsi/memory/RESEARCH_MEMORY.md`.

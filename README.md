@@ -2,7 +2,7 @@
 
 Model development and benchmarks for global mosquito (Culicidae) habitat mapping. The models fuse climate, landscape, human-footprint and AlphaEarth satellite-embedding representations, and every one is tested for spatial transfer.
 
-**Project site:** https://missa7481.github.io/NASA_Global_Habitat_Mapping/ · **Benchmark tables:** [BENCHMARK.md](BENCHMARK.md) · **Research ledger:** [rsi/memory/RESEARCH_MEMORY.md](rsi/memory/RESEARCH_MEMORY.md)
+**Benchmark tables:** [BENCHMARK.md](BENCHMARK.md) · **Research ledger:** [rsi/memory/RESEARCH_MEMORY.md](rsi/memory/RESEARCH_MEMORY.md)
 
 > Independent research prototype. Not an official NASA product.
 
@@ -29,12 +29,11 @@ Four model families were developed in order. Each started from the failures of t
 ## Repository layout
 
 ```
-index.html, assets/      project site (GitHub Pages)
 BENCHMARK.md             all benchmark tables, generated from artifacts/
 hicofuse/                HiCo-Fuse data store, models (models.py), training, multi-resolution, maps, VLM probes
 oadsdm/                  observation-aware integrated SDM: data blocks, likelihoods, theory and protocol
 rsi/                     research loop: common.py (holdout designs, metrics, baselines), it1–it6 experiments,
-                         CAUSAL_DAG.md, memory/ (structured ledger), report and site builders
+                         CAUSAL_DAG.md, memory/ (structured ledger), report builder
 scripts/                 foundation bundle, fusion benchmark, OA-DSDM runner, semi-synthetic benchmark, feature extraction
 tests/                   unit tests
 artifacts/               aggregate results only (fold and split metrics, summaries)
@@ -57,7 +56,7 @@ The experiments need the HiCo-Fuse feature store (`artifacts/hicofuse/dataset.np
 
 ## Data policy
 
-This repository publishes only aggregate metrics and 0.2° model maps. It does not publish observation coordinates, site-level features, per-site or per-cell predictions, or raw downloads.
+This repository publishes only aggregate metrics. It does not publish observation coordinates, site-level features, per-site or per-cell predictions, or raw downloads.
 
 **Data sources:**
 - iNaturalist research-grade observations via GBIF
