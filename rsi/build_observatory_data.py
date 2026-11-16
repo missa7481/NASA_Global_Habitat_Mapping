@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Aggregate model-development results into ../github_site/data/model_benchmarks.json for research.html.
+"""Aggregate model-development results into ../github_site/data/model_benchmarks.json for the website (Research, Models and Methods pages).
 
 Aggregate metrics only (split means, fold summaries). No coordinates, per-site or per-cell values.
 Also copies the 0.2-degree dark global model maps into ../github_site/assets/maps/.

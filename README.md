@@ -2,7 +2,8 @@
 
 Model development and benchmarks for global mosquito (Culicidae) habitat mapping. The models fuse climate, landscape, human-footprint and AlphaEarth satellite-embedding representations, and every one is tested for spatial transfer.
 
-**Benchmark tables:** [BENCHMARK.md](BENCHMARK.md) · **Research ledger:** [rsi/memory/RESEARCH_MEMORY.md](rsi/memory/RESEARCH_MEMORY.md)
+**Benchmark tables:** [BENCHMARK.md](BENCHMARK.md) · **Research ledger:** [rsi/memory/RESEARCH_MEMORY.md](rsi/memory/RESEARCH_MEMORY.md)  
+**Interactive results and maps:** [missa7481.github.io/habitat-observatory](https://missa7481.github.io/habitat-observatory/)
 
 > Independent research prototype. Not an official NASA product.
 
