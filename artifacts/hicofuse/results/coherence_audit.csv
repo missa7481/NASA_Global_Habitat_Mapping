@@ -15,3 +15,7 @@ HiCoMoE,own macro term A (intensity-space ensemble),Ae_albopictus,1.229574606576
 HiCoMoE,own macro term A (intensity-space ensemble),Ae_aegypti,1.225950649885732e-07,0.0,0.0,0.9999999999981586
 HiCoMoE,own macro term A (intensity-space ensemble),Culex,1.0415984302847292e-07,0.0,0.0,0.9999999999964969
 HiCoMoE,own macro term A (intensity-space ensemble),Anopheles,1.0620393964266839e-07,0.0,0.0,0.9999999999965449
+HF2,own macro term A (intensity-space ensemble),Ae_albopictus,4.134299391722607e-08,0.0,0.0,0.9999999999989239
+HF2,own macro term A (intensity-space ensemble),Ae_aegypti,4.416669896478709e-08,0.0,0.0,0.999999999999199
+HF2,own macro term A (intensity-space ensemble),Culex,3.858116859323246e-08,0.0,0.0,0.9999999999976448
+HF2,own macro term A (intensity-space ensemble),Anopheles,3.6878004094909045e-08,0.0,0.0,0.9999999999975013

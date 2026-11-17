@@ -25,6 +25,8 @@ RESULT_GLOBS = [
     "oadsdm/*/tuning.csv", "oadsdm/step1/*.csv",
     "rsi/it1/*.csv", "rsi/it2/metrics.csv", "rsi/it2/stack_weights.csv", "rsi/it3/*.csv", "rsi/it3/*.txt",
     "rsi/it4/*.csv", "rsi/it5_pool.csv", "rsi/it6/*.csv",
+    "rsi/it7/*.csv", "rsi/it7/head_params.json", "rsi/it7_b20/*.csv", "rsi/it7_pool4/*.csv", "rsi/it7_pool4/head_params.json",
+    "rsi/gbif_pool/tiles.json",
 ]
 NEVER = ("neon_oof", "gate_weights", "site_features", "oof_", ".npz", ".npy", "dataset")
 
@@ -181,11 +183,33 @@ def benchmark() -> str:
              "\n\n**Iteration 6 · coherence versus accuracy** (`rsi/it6_coherence.py`). Separately fitted coarse and fine maps flip the dominant "
              f"class in {flip.min() * 100:.0f}–{flip.max() * 100:.0f}% of 0.5° parents; all other arms are coherent by construction.\n\n" + md(f6) + "\n")
 
+    m7 = pd.read_csv(A / "rsi/it7/metrics.csv")
+    m7b = pd.read_csv(A / "rsi/it7_pool4/metrics.csv")
+    m7b = m7b[m7b.model.isin(["HF2", "HF2-shrink2"])].assign(model=lambda d: d.model + "+pool4")
+    f7 = pd.concat([m7, m7b])
+    f7 = f7[f7.level == "fine"]
+    arms7 = ["RF", "HF2", "HF2-shrink2", "HF2+pool4", "HF2-shrink2+pool4"]
+    a7 = f7.groupby(["model", "design"])["AUC_mean"].mean().unstack().loc[arms7].rename(columns=DL)
+    n7 = f7.groupby(["model", "design"])["nll"].mean().unstack().loc[arms7].rename(columns=DL)
+    a7.index.name = n7.index.name = "Arm (fine level)"
+    S.append("## 6. HiCo-Fuse 2 (iteration 7)\n\n"
+             "The rebuilt model: the HiCo coherence rule over a random-forest local term B, with a small region term "
+             "A_s(P) = α_s + γ_s M_s(P) + w_s·z(P), where M is the forest's own parent map and z an exogenous species-pool layer "
+             "(Kraemer compendium density; `+pool4` adds GBIF Culicidae 1900–2021 genus counts per 5° tile, `rsi/fetch_gbif_pool.py`). "
+             "The head is fitted on 5°-block out-of-fold forest output with a ridge penalty towards the plain forest. `shrink2` pulls the head "
+             "back to the forest in parents that are novel in environment or pool space (rule fixed before testing). "
+             "Code: `rsi/it7_hicofuse2.py`; global maps `rsi/hf2_global.py`.\n\n**Mean per-class AUC**\n\n" + md(a7) +
+             "\n\n**Log-loss** (lower is better)\n\n" + md(n7) +
+             "\n\nHF2+pool4 beats the forest in 14/20 splits on both AUC and log-loss (sign test p = 0.12 each); "
+             "log-loss with a whole world region held out remains slightly above the forest's. "
+             "Kraemer-based external checks are not independent for HiCo-Fuse 2 because its pool layer uses the compendium.\n")
+
     S.append("## Reading the benchmark\n\n"
              "- Random-split skill is mostly interpolation; report leave-region-out and climate-zone results.\n"
              "- The random forest is the model to beat on every holdout design.\n"
              "- Most transfer error is the regional species mix (class prior), not the habitat relation.\n"
-             "- HiCo's coherence rule can be applied to any model after training at no measurable accuracy cost.\n\n"
+             "- HiCo's coherence rule can be applied to any model after training at no measurable accuracy cost.\n"
+             "- HiCo-Fuse 2 (coherent forest + exogenous species pool + novelty trust) matches or beats the forest on ranking in every design.\n\n"
              "Full reasoning, hypotheses and failures: `rsi/memory/RESEARCH_MEMORY.md`.\n")
     return "\n".join(S)
 

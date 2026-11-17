@@ -68,7 +68,7 @@ def main():
          "global_support")
 
     # coherent zoom: coarse parent mean and fine children on one shared square-root scale
-    tp = np.load(G / "HiCo_twopart.npy")
+    tp = np.load(G / ("HF2_twopart.npy" if (G / "HF2_twopart.npy").exists() else "HiCo_twopart.npy"))
     par = np.load(G / "parent.npy")
     n_par = par.max() + 1
     for zn, z in ZOOMS.items():

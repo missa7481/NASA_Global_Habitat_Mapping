@@ -38,6 +38,48 @@ STRAT_LABEL = {"Equal": "Equal weights", "Theory": "Theory-fixed", "Stack-global
                "Reliability": "Local reliability"}
 
 
+# Habitat Representation Lab (a sibling research workspace): a separate Ae. albopictus presence vs
+# target-group background project on 1,601 locations. Aggregate numbers transcribed from its reports
+# (docs/rsi_report.html, docs/sparse_earth_report.html, docs/cs_representation_report.html, docs/expansion_report.html).
+# "use" states what each result changes in the HiCo-Fuse 2 method; tests that do not inform it are listed separately.
+LAB = {
+    "task": "Ae. albopictus recorded presence vs other-mosquito background · 1,601 locations, 1,292 with held-out assignments · "
+            "three 150 km spatial-block folds with 20 km buffers, plus longitude-sector and temperature holdouts · fixed RF and MaxNet probes",
+    "fits": "about 600 fixed model fits across five cycles",
+    "findings": [
+        {"component": "Representation", "verdict": "kept", "title": "Physical context helps a simple model, not the forest",
+         "result": "206 physical variables: MaxNet spatial AP +0.042, random forest −0.004",
+         "use": "Give the niche term the full physical context; with a forest the gain is already captured."},
+        {"component": "Representation", "verdict": "kept", "title": "Simple compression of AlphaEarth is enough",
+         "result": "AP: PCA-16 0.831 · raw 64-D 0.821 · learned sparse code 0.809 (learned − raw −0.012, interval −0.028 to +0.010)",
+         "use": "Use raw or PCA-compressed embeddings. Sparse dictionaries cut reconstruction error 70% against a random dictionary but do not rank habitat better."},
+        {"component": "Representation", "verdict": "rejected", "title": "No general gain from newer self-supervised encoders",
+         "result": "Environment + VISReg AP 0.8367 vs environment alone 0.8363 across 27 recipes; expansion VISReg change −0.009",
+         "use": "Do not add encoder pretraining to the method without a transfer gain."},
+        {"component": "Fusion", "verdict": "rejected", "title": "Adaptive expert gates do not generalise",
+         "result": "Equal mixing AP 0.8226 · learned global weights 0.8178 · environment-varying gate 0.8178; the gate failed its pre-declared test in 3 of 3 holdout designs",
+         "use": "Independent replication of our weighting (I2) and HiCo (I6) results: learned gates fit the training geography. HiCo-Fuse 2 replaces them with a fixed niche model and a small penalised head."},
+        {"component": "Transfer", "verdict": "kept", "title": "AlphaEarth carries transfer to a new continent",
+         "result": "Random forest, Americas held out: AP 0.625 → 0.718 with AlphaEarth added",
+         "use": "Keep AlphaEarth in the niche term; its value is largest exactly where transfer is hardest."},
+        {"component": "Observation", "verdict": "proposed", "title": "Ranking transfers, thresholds do not",
+         "result": "All six Europe-held-out models miss every detected site of a 313-site Austrian survey at their training threshold, while keeping ranking signal",
+         "use": "Maps must be read as relative rankings; calibrated occurrence needs an explicit observation/detection branch (next step)."},
+    ],
+    "not_featured": [
+        "Input-recovery scores of six unsupervised fusion methods: no habitat endpoint, and correlated views make recovery easy.",
+        "Reconstruction gates of sparse autoencoders on their own: reconstruction quality is not habitat prediction.",
+        "Masked-JEPA adapter: its training loss rose and its rank collapsed, so it is not a valid test of the method.",
+        "Unverified benchmark candidates from literature monitoring (RICapBench, VHR-Bench, PUMA): not admitted.",
+    ],
+    "next": [
+        "Separate ecological state from observation and detection (shared representation, report and survey heads)",
+        "Freeze a genuinely unused 2025 validation cohort before any further promotion",
+        "Add water, thermal and soil sources one at a time against transfer failures",
+    ],
+}
+
+
 def r(x, k=4):
     return None if x is None or not np.isfinite(x) else round(float(x), k)
 
@@ -121,6 +163,50 @@ def main():
                       "tests": {m: {"wins": int(pt.loc[("fine", m, "AUC_mean"), "wins_vs_RF"]), "n": int(pt.loc[("fine", m, "AUC_mean"), "n"]),
                                     "p": r(pt.loc[("fine", m, "AUC_mean"), "p_sign"]), "mean_diff": r(pt.loc[("fine", m, "AUC_mean"), "mean_diff"])}
                                 for m in ("RF+Recon", "HiCo-RF", "HiCo")}}
+
+    # ---- iteration 7: HiCo-Fuse 2 (rebuilt). Pool-4 run (I7-05) used when present.
+    m7 = pd.read_csv(A / "rsi/it7/metrics.csv")
+    p4 = A / "rsi/it7_pool4/metrics.csv"
+    if p4.exists():
+        m7b = pd.read_csv(p4)
+        m7b = m7b[m7b.model.isin(["HF2", "HF2-shrink2"])].assign(model=lambda d: d.model + "+pool4")
+        m7 = pd.concat([m7, m7b])
+    m7 = pd.concat([m7, m6[m6.model == "HiCo"]])
+    f7 = m7[m7.level == "fine"]
+    g7 = f7.groupby(["model", "design"])[["AUC_mean", "nll"]].mean()
+    hf_arms = [("HiCo", "HiCo, original neural terms"), ("RF", "Random forest (flat, the bar)"),
+               ("HF2", "HiCo-Fuse 2, Aedes pool"), ("HF2-shrink2", "HiCo-Fuse 2 + novelty trust"),
+               ("HF2+pool4", "HiCo-Fuse 2, all-genus pool"), ("HF2-shrink2+pool4", "HiCo-Fuse 2, all-genus pool + trust")]
+    hf_arms = [(a, l) for a, l in hf_arms if a in g7.index.get_level_values(0)]
+    w7 = f7.pivot_table(index=["design", "split"], columns="model", values=["AUC_mean", "nll"])
+
+    def paired(m, met):
+        d = (w7[met][m] - w7[met]["RF"]).dropna() * (1 if met == "AUC_mean" else -1)
+        return {"wins": int((d > 0).sum()), "n": int(len(d)), "mean_diff": r(float(d.mean())),
+                "p": r(float(binomtest(int((d > 0).sum()), len(d)).pvalue))}
+    lo = f7[f7.design == "loro"].pivot_table(index="split", columns="model", values="nll")
+    hp = pd.read_json((A / "rsi/it7_pool4/head_params.json") if p4.exists() else (A / "rsi/it7/head_params.json"))
+    hh = hp[hp.model == "HF2"]
+    D["hf2"] = {"arms": [{"id": a, "label": l, **{f"AUC_{d}": r(g7.loc[(a, d), "AUC_mean"]) for d in ("block10", "env", "loro", "zone")},
+                          **{f"nll_{d}": r(g7.loc[(a, d), "nll"]) for d in ("block10", "env", "loro", "zone")},
+                          **({"auc_test": paired(a, "AUC_mean"), "nll_test": paired(a, "nll")} if a != "RF" else {})} for a, l in hf_arms],
+                "loro_nll": [{"region": reg, **{a: r(lo.loc[reg, a]) for a, _ in hf_arms if a in lo.columns}} for reg in lo.index],
+                "gamma_mean": [r(float(np.mean([g[s] for g in hh["g"]]))) for s in range(4)],
+                "tau_mean": [r(float(np.mean([t[s] for t in hh["t"]]))) for s in range(4)],
+                "n_params": 28}
+    ca = pd.read_csv(A / "hicofuse/results/coherence_audit.csv")
+    D["hf2"]["coherence_max_abs_log"] = r(float(ca[ca.model == "HF2"]["median_abs_log_ratio"].max()), 6)
+    ev7 = pd.read_csv(A / "hicofuse/results/external_validation.csv")
+    ev7 = ev7[ev7.model == "HF2 x support (two-part)"]
+    D["hf2"]["external"] = {f"{x.dataset} · {x.subset}": r(x.AUC) for x in ev7.itertuples()}
+    if p4.exists():
+        D["hf2"]["n_params"] = 60
+    gm = A / "hicofuse/global/HF2_meta.json"
+    if gm.exists():
+        D["hf2"]["global"] = {k: v for k, v in json.loads(gm.read_text()).items() if k in ("trust_share_full", "trust_share_rf", "trust_mean", "parents", "cells", "pool")}
+
+    # ---- Habitat Representation Lab (separate Ae. albopictus presence/background project; aggregate results from its reports)
+    D["lab"] = LAB
 
     # ---- HiCo-Fuse architecture CV and external checks
     c = pd.read_csv(A / "hicofuse/cv_summary.csv").set_index("model")

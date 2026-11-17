@@ -31,7 +31,7 @@ from hicofuse.train import ART, DEV, Store  # noqa: E402
 
 G = ART / "global"
 R = ART / "results"
-MODELS = ["MLPEarly", "GatedMoE", "HiCo", "HiCoMoE"]
+MODELS = ["MLPEarly", "GatedMoE", "HiCo", "HiCoMoE", "HF2"]   # HF2 = HiCo-Fuse 2 (rsi/hf2_global.py)
 CL = ["Ae_albopictus", "Ae_aegypti", "Culex", "Anopheles"]
 ENV = {"aegypti": (17.8, 29.1, 34.6), "albopictus": (16.2, 26.4, 31.6), "malaria": (16.0, 25.0, 34.0), "wnv": (16.0, 24.5, 33.0)}
 
@@ -134,7 +134,7 @@ def main():
         agg = np.zeros((n_par, 4))
         for s in range(4):
             agg[:, s] = np.bincount(st.par, weights=np.exp(e[:, s].astype(np.float64)), minlength=n_par) / st.par_n
-        if m.startswith("HiCo"):
+        if m.startswith("HiCo") or m == "HF2":
             ref, label = np.load(G / f"{m}_parentA.npy"), "own macro term A (intensity-space ensemble)"
         else:
             ref, label = eta_coarse, "separately fitted 0.5-deg model"
@@ -154,7 +154,8 @@ def main():
     f = {n: st.X[:, i] * st.sd[i] + st.mu[i] for i, n in enumerate(feats) if n in ("bio19_1", "bio19_10", "bio19_11")}
     temps = [f["bio19_10"], f["bio19_1"], f["bio19_11"]]
     therm = {k: np.mean([envelope(t, *v) for t in temps], axis=0).astype(np.float32) for k, v in ENV.items()}
-    base = two_part["HiCo"]
+    base_model = "HF2" if "HF2" in two_part else "HiCo"
+    base = two_part[base_model]
     suit = {name: pct(base[:, s]).astype(np.float32) for s, name in enumerate(CL)}
     dengue = 1 - (1 - suit["Ae_aegypti"] * therm["aegypti"]) * (1 - suit["Ae_albopictus"] * therm["albopictus"])
     np.savez_compressed(R / "layers.npz", **{f"suit_{k}": v for k, v in suit.items()},
@@ -162,7 +163,7 @@ def main():
                         dengue=dengue.astype(np.float32),
                         wnv=(suit["Culex"] * therm["wnv"]).astype(np.float32),
                         malaria=(suit["Anopheles"] * therm["malaria"]).astype(np.float32))
-    (R / "layers_meta.json").write_text(json.dumps({"base_model": "HiCo two-part (support x share)", "suitability": "percentile of S_s among land cells",
+    (R / "layers_meta.json").write_text(json.dumps({"base_model": f"{base_model} two-part (support x share)", "suitability": "percentile of S_s among land cells",
                                                     "envelopes": ENV, "wnv_parameters": "approximate; verify"}, indent=1))
     print("layers saved")
 

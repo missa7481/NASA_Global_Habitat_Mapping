@@ -56,6 +56,8 @@ External checks (AUC, never used in training): Kraemer et al. (2015) compendium 
 |---|---:|---:|---:|---:|---:|
 | GatedMoE (composition only) | 0.366 | 0.215 | 0.378 | 0.362 | 0.658 |
 | GatedMoE x support (two-part) | 0.799 | 0.649 | 0.769 | 0.728 | 0.927 |
+| HF2 (composition only) | 0.751 | 0.663 | 0.847 | 0.815 | 0.873 |
+| HF2 x support (two-part) | 0.893 | 0.818 | 0.905 | 0.879 | 0.923 |
 | HiCo (composition only) | 0.569 | 0.479 | 0.571 | 0.557 | 0.743 |
 | HiCo x support (two-part) | 0.869 | 0.779 | 0.849 | 0.821 | 0.921 |
 | HiCoMoE (composition only) | 0.551 | 0.442 | 0.559 | 0.547 | 0.789 |
@@ -171,11 +173,38 @@ All on the composition task with the holdout designs of section 4; mean per-clas
 | RF | 0.761 | 0.694 | 0.700 | 0.707 |
 | RF+Recon | 0.761 | 0.696 | 0.686 | 0.703 |
 
+## 6. HiCo-Fuse 2 (iteration 7)
+
+The rebuilt model: the HiCo coherence rule over a random-forest local term B, with a small region term A_s(P) = α_s + γ_s M_s(P) + w_s·z(P), where M is the forest's own parent map and z an exogenous species-pool layer (Kraemer compendium density; `+pool4` adds GBIF Culicidae 1900–2021 genus counts per 5° tile, `rsi/fetch_gbif_pool.py`). The head is fitted on 5°-block out-of-fold forest output with a ridge penalty towards the plain forest. `shrink2` pulls the head back to the forest in parents that are novel in environment or pool space (rule fixed before testing). Code: `rsi/it7_hicofuse2.py`; global maps `rsi/hf2_global.py`.
+
+**Mean per-class AUC**
+
+| Arm (fine level) | Block 10° | Env. cluster | Leave region out | Climate zone |
+|---|---:|---:|---:|---:|
+| RF | 0.761 | 0.694 | 0.700 | 0.707 |
+| HF2 | 0.766 | 0.701 | 0.702 | 0.710 |
+| HF2-shrink2 | 0.766 | 0.697 | 0.701 | 0.716 |
+| HF2+pool4 | 0.771 | 0.707 | 0.706 | 0.709 |
+| HF2-shrink2+pool4 | 0.770 | 0.704 | 0.704 | 0.710 |
+
+**Log-loss** (lower is better)
+
+| Arm (fine level) | Block 10° | Env. cluster | Leave region out | Climate zone |
+|---|---:|---:|---:|---:|
+| RF | 0.930 | 1.040 | 1.289 | 1.113 |
+| HF2 | 0.912 | 1.022 | 1.391 | 1.096 |
+| HF2-shrink2 | 0.911 | 1.017 | 1.349 | 1.088 |
+| HF2+pool4 | 0.903 | 1.006 | 1.326 | 1.073 |
+| HF2-shrink2+pool4 | 0.906 | 1.007 | 1.324 | 1.073 |
+
+HF2+pool4 beats the forest in 14/20 splits on both AUC and log-loss (sign test p = 0.12 each); log-loss with a whole world region held out remains slightly above the forest's. Kraemer-based external checks are not independent for HiCo-Fuse 2 because its pool layer uses the compendium.
+
 ## Reading the benchmark
 
 - Random-split skill is mostly interpolation; report leave-region-out and climate-zone results.
 - The random forest is the model to beat on every holdout design.
 - Most transfer error is the regional species mix (class prior), not the habitat relation.
 - HiCo's coherence rule can be applied to any model after training at no measurable accuracy cost.
+- HiCo-Fuse 2 (coherent forest + exogenous species pool + novelty trust) matches or beats the forest on ranking in every design.
 
 Full reasoning, hypotheses and failures: `rsi/memory/RESEARCH_MEMORY.md`.

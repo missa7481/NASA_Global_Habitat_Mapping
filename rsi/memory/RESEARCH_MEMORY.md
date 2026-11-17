@@ -23,6 +23,11 @@ Generated from `ledger.jsonl`; do not edit by hand.
 | P1 | 6 | Spatial-Model RSI | Proposal: Pool-Niche-Support (PNS) hierarchical model | proposed |
 | M1 | 6 | Scientific RSI | Meta-lessons for the research strategy | infrastructure |
 | I6-01 | 6 | Spatial-Model RSI | Does HiCo's hierarchy cost accuracy? Coherence vs a strong flat model | baseline-candidate |
+| I7-01 | 7 | Spatial-Model RSI | HiCo-Fuse 2: coherent hierarchy over an RF niche term with a species-pool macro term | baseline-candidate |
+| I7-02 | 7 | Spatial-Model RSI | HiCo-Fuse 2 head fitted on 20-degree OOF blocks | rejected |
+| I7-03 | 7 | Spatial-Model RSI | HiCo-Fuse 2 with novelty-dependent shrinkage towards RF | inconclusive |
+| I7-04 | 7 | Spatial-Model RSI | HiCo-Fuse 2 trust from species-pool novelty | baseline-candidate |
+| I7-05 | 7 | Data RSI | All-genus species-pool layer (GBIF 1900-2021) on the HiCo-Fuse 2 region term | baseline-candidate |
 
 ## I0-01 - AlphaEarth leaks human footprint
 
@@ -279,3 +284,102 @@ Generated from `ledger.jsonl`; do not edit by hand.
 - **failed:** HiCo as a learner: its neural local and macro terms are the source of the deficit, not the coherence constraint.
 - **open questions:** Does a coarse term fed by data the fine model cannot see (species-pool checklists) beat RF-agg at the coarse level?
 - **next:** Keep HiCo as the coherence operator; fill its macro term with the species-pool layer (P1), not with a learned net on parent-mean covariates.
+
+## I7-01 - HiCo-Fuse 2: coherent hierarchy over an RF niche term with a species-pool macro term
+
+*Iteration 7 - Spatial-Model RSI - status: **baseline-candidate***
+
+- **question:** After I6-01 (coherence is free; HiCo's neural terms lose), can a rebuilt HiCo-Fuse match or beat RF while staying exactly coherent?
+- **hypothesis:** Replacing HiCo's learned terms with a fixed RF local term and a 28-parameter macro head (alpha, gamma, tau, pool weights) fitted on spatially out-of-fold RF output keeps RF accuracy and adds transfer gain through the exogenous pool layer. Falsified if HF2 loses to RF under LORO.
+- **data:** iNat research-grade Culicidae 2022-2025 (<=2 km), 7,004 report cells at 0.05 deg; 105 features (Climate 26, Landscape 11, Human 4, AlphaEarth 64)
+- **representation:** Standardised raw covariates + AlphaEarth 2024 embedding (HiCo-Fuse store)
+- **fusion:** eta_s = A_s(P) + tau_s B_s(x) - logmeanexp_P(tau_s B_s); A_s = alpha_s + gamma_s M_s(P) + w_s.z(P); B = RF log-ratios (all four modalities); M = RF-aggregated parent map; z = Kraemer pool density at the parent (100/500 km, 2 species)
+- **architecture:** Arms: RF, RF+Recon (I6), HF2-cal (no pool), HF2; head = ridge (lambda 0.01) towards identity, LBFGS, fitted on 4-fold 5-degree-block OOF RF inside the training set; coherence asserted < 1e-6 on every split
+- **validation:** block10, LORO, env, zone (20 splits); 0.05-deg cells and 0.5-deg parents
+- **results:** Fine AUC block10/env/LORO/zone: HF2 0.766/0.701/0.702/0.710 vs RF 0.761/0.694/0.700/0.707 (best on all four designs; 13/20 wins, mean +0.004, p = 0.26). Fine NLL: HF2 0.912/1.022/1.391/1.096 vs RF 0.930/1.040/1.289/1.113 (better except LORO; 11/20). Largest LORO AUC gains: Latin America +0.046, Europe +0.017, Oceania +0.015; losses Africa -0.055 (75 test cells), N America -0.013. HF2-cal (no pool) = RF (9/20). Coarse AUC HF2 vs RF-agg: LORO 0.672 vs 0.654, zone 0.684 vs 0.679.
+- **error patterns:** Head sharpens the Aedes macro term (gamma 1.2-1.5 for both Aedes) and flattens Culex (gamma ~0.8): ranking improves, but held-out-region probabilities become overconfident (LORO NLL +0.10).
+- **ecological:** The exogenous Aedes pool density helps most where Aedes arrival history differs from the training regions (Latin America, Europe).
+- **causal:** None; prediction-level.
+- **improved:** First HiCo variant that is not worse than RF on any design by AUC while exactly coherent; the pool term, not calibration, carries the gain.
+- **failed:** Calibration under region hold-out (LORO NLL worse in 4/6 regions).
+- **open questions:** How to keep the pool ranking gain without overconfidence: shrink gamma under detected novelty, or pool data for Culex/Anopheles/other.
+- **next:** I7-02 tested larger OOF blocks; next: novelty-dependent shrinkage of the head towards identity, and pool layers for the other classes.
+
+## I7-02 - HiCo-Fuse 2 head fitted on 20-degree OOF blocks
+
+*Iteration 7 - Spatial-Model RSI - status: **rejected***
+
+- **question:** Is HF2's LORO overconfidence caused by OOF folds (5-degree blocks) being less shifted than deployment?
+- **hypothesis:** Fitting the head on 20-degree-block OOF lowers gamma and fixes LORO NLL without losing AUC.
+- **data:** iNat research-grade Culicidae 2022-2025 (<=2 km), 7,004 report cells at 0.05 deg; 105 features (Climate 26, Landscape 11, Human 4, AlphaEarth 64)
+- **representation:** Standardised raw covariates + AlphaEarth 2024 embedding (HiCo-Fuse store)
+- **fusion:** As I7-01
+- **architecture:** As I7-01 with 20-degree OOF blocks
+- **validation:** block10, LORO, env, zone (20 splits)
+- **results:** LORO NLL worse, not better: 1.490 (vs 1.391 with 5-degree blocks, RF 1.289); zone NLL 1.142 (vs 1.096). AUC about unchanged (12/20 vs RF).
+- **ecological:** None.
+- **causal:** None.
+- **improved:** Nothing.
+- **failed:** Hypothesis falsified: coarser OOF folds give fewer, noisier folds and a worse head.
+- **open questions:** The overconfidence is not an OOF-shift-mismatch artefact; it is regional.
+- **next:** Keep 5-degree OOF. Do not retry block-size changes without new evidence.
+
+## I7-03 - HiCo-Fuse 2 with novelty-dependent shrinkage towards RF
+
+*Iteration 7 - Spatial-Model RSI - status: **inconclusive***
+
+- **question:** Does pulling the HF2 head back to plain RF in environmentally novel parents fix its LORO overconfidence (I7-01)?
+- **hypothesis:** Head trust rho(P) = clip(2 - d(P)/q90, 0, 1), d = mean distance of the parent's mean features to its 5 nearest training parents, q90 = 90th percentile of OOF novelty seen while fitting the head (rule fixed before the run). Predicts LORO NLL <= RF with AUC kept.
+- **data:** iNat research-grade Culicidae 2022-2025 (<=2 km), 7,004 report cells at 0.05 deg; 105 features (Climate 26, Landscape 11, Human 4, AlphaEarth 64)
+- **representation:** Standardised raw covariates + AlphaEarth 2024 embedding (HiCo-Fuse store)
+- **fusion:** As I7-01; all head parameters scaled per parent by rho, so the map stays exactly coherent (asserted < 1e-6)
+- **architecture:** HF2-shrink = HF2 head + per-parent trust; no new fitted parameters
+- **validation:** block10, LORO, env, zone (20 splits)
+- **results:** Fine NLL block10/env/LORO/zone: 0.912/1.019/1.366/1.091 (HF2 0.912/1.022/1.391/1.096; RF 0.930/1.040/1.289/1.113). AUC 0.765/0.699/0.699/0.711 (12/20 vs RF). Mean trust: block10 0.96-0.99, LORO 0.70-0.95. LORO NLL by region (RF / HF2 / shrink): N America 1.147/1.316/1.231, Asia 1.293/1.445/1.384, Africa 1.691/1.958/1.958, Europe 1.062/1.082/1.082.
+- **error patterns:** The rule engages where environmental novelty is high (N America, Asia) and recovers about half of their loss, but Africa (trust 0.88) keeps the full loss: its failure is species-pool novelty, which covariate distance cannot see.
+- **ecological:** Consistent with I1-03: the residual error is a regional class-prior shift, not an environmental one.
+- **causal:** None.
+- **improved:** Closes about a quarter of the LORO log-loss gap at no in-distribution cost.
+- **failed:** Does not reach RF calibration under LORO.
+- **open questions:** Can trust be driven by pool novelty (distance in z(P), or Kraemer/checklist coverage) rather than covariate novelty?
+- **next:** Shrink on pool-space novelty; pool layers for Culex/Anopheles/other (P1).
+
+## I7-04 - HiCo-Fuse 2 trust from species-pool novelty
+
+*Iteration 7 - Spatial-Model RSI - status: **baseline-candidate***
+
+- **question:** I7-03 left Africa and part of N America overconfident. Does novelty in the species-pool layer z(P) flag them?
+- **hypothesis:** Same pre-declared trust rule on pool-space novelty (HF2-shrinkP) and the stricter of covariate and pool trust (HF2-shrink2) reduce LORO NLL further than covariate trust alone.
+- **data:** iNat research-grade Culicidae 2022-2025 (<=2 km), 7,004 report cells at 0.05 deg; 105 features (Climate 26, Landscape 11, Human 4, AlphaEarth 64)
+- **representation:** Standardised raw covariates + AlphaEarth 2024 embedding (HiCo-Fuse store)
+- **fusion:** As I7-01; trust per parent, exactly coherent (asserted)
+- **architecture:** HF2 head + trust = min(rho_cov, rho_pool)
+- **validation:** block10, LORO, env, zone (20 splits)
+- **results:** Fine NLL block10/env/LORO/zone: HF2-shrink2 0.911/1.017/1.349/1.088 vs RF 0.930/1.040/1.289/1.113 (HF2 1.391 LORO). AUC 0.766/0.697/0.701/0.716 (13/20 vs RF, +0.004, p = 0.26). LORO N America NLL 1.156 (RF 1.147, HF2 1.316); Africa unchanged 1.958 (pool trust 1.0).
+- **error patterns:** Pool trust is low in N America (0.46) and Latin America (0.69) and 1.0 in Africa: Africa's Aedes pool looks familiar; its error lies in the classes the pool layer does not cover (Culex, Anopheles).
+- **ecological:** The Aedes-only pool layer cannot represent Anopheles-dominated faunas.
+- **causal:** None.
+- **improved:** About 40% of the LORO log-loss gap closed; best zone and block10 log-loss of any arm; ranking gain kept.
+- **failed:** LORO NLL still above RF, driven by Africa (75 test cells) and Asia.
+- **open questions:** Pool layers for Culex, Anopheles and other.
+- **next:** I7-05: exogenous pool layer for all classes (GBIF non-iNaturalist records), then re-run HF2-shrink2.
+
+## I7-05 - All-genus species-pool layer (GBIF 1900-2021) on the HiCo-Fuse 2 region term
+
+*Iteration 7 - Data RSI - status: **baseline-candidate***
+
+- **question:** I7-04 traced the remaining LORO error (Africa) to classes the Aedes-only pool layer does not describe. Does an all-genus pool fix it?
+- **hypothesis:** Adding GBIF Culicidae counts per 5-degree tile (total and Aedes/Culex/Anopheles shares, own tile and 3x3 neighbourhood; records 1900-2021, exogenous to the 2022-2025 iNaturalist labels) lowers LORO NLL, most in Africa.
+- **data:** iNat research-grade Culicidae 2022-2025 (<=2 km), 7,004 report cells at 0.05 deg; 105 features (Climate 26, Landscape 11, Human 4, AlphaEarth 64)
+- **representation:** Standardised raw covariates + AlphaEarth 2024 embedding (HiCo-Fuse store)
+- **fusion:** z(P) = Kraemer 4 + GBIF 8 features; same 28+ parameter head and trust rule (HF2-shrink2)
+- **architecture:** HF2+pool4 and HF2-shrink2+pool4 (head w grows to 12 x 4)
+- **validation:** block10, LORO, env, zone (20 splits)
+- **results:** Fine AUC block10/env/LORO/zone: HF2-shrink2+pool4 0.770/0.704/0.704/0.710 vs RF 0.761/0.694/0.700/0.707; NLL 0.906/1.007/1.324/1.073 vs RF 0.930/1.040/1.289/1.113. HF2+pool4 vs RF: 14/20 AUC wins (+0.008, p = 0.12), 14/20 NLL wins (p = 0.12). LORO NLL gap to RF 0.035 (was 0.10 with the Aedes-only pool). Africa 1.958 -> 1.856, Asia 1.360 -> 1.343, Europe 1.082 -> 1.056 (RF 1.062). GBIF data: 924 land tiles, 2.55 M records (Aedes 0.85 M, Culex 0.74 M, Anopheles 0.53 M).
+- **error patterns:** Remaining LORO excess is Africa (75 test cells) and N America (1.183 vs RF 1.147).
+- **ecological:** Which genera have been recorded in a region (independent of the training reports) carries the regional prior that environment cannot.
+- **causal:** None.
+- **improved:** First HiCo variant better than RF on 14/20 splits in both ranking and log-loss while exactly coherent; the exogenous pool data, not model capacity, produced the gain.
+- **failed:** Not yet significant at 20 splits; LORO log-loss still slightly above RF.
+- **open questions:** Finer pool resolution (country checklists, 1-degree tiles); a locked 2025 validation; Kraemer-based external checks are no longer independent for maps using this pool.
+- **next:** Adopt HF2-shrink2+pool4 as HiCo-Fuse 2; global maps; next: observation/detection branch and locked 2025 validation.
